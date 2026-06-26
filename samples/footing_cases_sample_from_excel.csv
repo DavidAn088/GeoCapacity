@@ -1,0 +1,3 @@
+case_id,footing_shape,analysis_type,B_m,L_m,D_m,t_m,Cx_m,Cy_m,Ox_m,Oy_m,eccentricity_mode,water_table_depth_m,Qc_t,Mcx_tm,Mcy_tm,Hx_t,Hy_t,beta_deg,g1u_t_m3,g1sat_t_m3,c1_t_m2,phi1_deg,g2u_t_m3,g2sat_t_m3,c2_t_m2,phi2_deg,gc_t_m3,gw_t_m3,FS,result_unit
+Calc-1,R,E,1.5,2.0,1.0,0.2,0.2,0.2,0.1,0.15,MOMENT,0.0,20.0,3.0,2.0,1.5,2.5,,1.9,2.0,1.0,30.0,1.5,1.6,2.0,33.0,2.4,1.0,3.0,ton
+Calc-2,R,E,1.5,2.0,1.0,0.2,0.2,0.2,0.1,0.15,MOMENT,1.0,20.0,3.0,2.0,1.5,2.5,,1.9,2.0,1.0,30.0,1.5,1.6,2.0,33.0,2.4,1.0,3.0,ton
