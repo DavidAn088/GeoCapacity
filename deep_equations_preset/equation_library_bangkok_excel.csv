@@ -1,0 +1,22 @@
+parameter,equation,latex,unit,soil_type,source,notes
+su2_t_m2,nan if SPT_N_missing > 0.5 else 0.52 * SPT_N,s_{u2}=0.52N\quad(\mathrm{blank\ if\ SPT\ is\ blank}),t/m²,Clay,Default v8.8,"Excel match: blank SPT gives blank su2, not zero."
+Su_t_m2,"avg(su1_t_m2, su2_t_m2)","S_u=\mathrm{avg}(s_{u1},s_{u2})",t/m²,Clay,Default v8.8,Average ignores blank/nan
+alpha_clay,0.93 * exp(-0.0536 * Su_t_m2),\alpha=0.93e^{-0.0536S_u},-,Clay,Default v8.8,Adhesion factor
+CN,"0.77 * log10(20 * 95.76 / max(sigma_v02_t_m2 * g_factor, 0.0001))","C_N=0.77\log_{10}\left(\frac{20\times95.76}{\sigma'_{v,mid}g}\right)",-,Sand,Default v8.8,Overburden correction
+N_corr,CN * SPT_N,N'=C_NN,blows/ft,Sand,Default v8.8,Corrected SPT
+phi_deg,27.1 + 0.3 * N_corr - 0.00054 * N_corr**2,\phi=27.1+0.3N'-0.00054N'^2,degree,Sand,Das/Wolff style,Friction angle correlation
+K0,1 - sin(radians(phi_deg)),K_0=1-\sin\phi,-,Sand,Default v8.8,At-rest coefficient
+Ks_driven,1.5 * K0,"K_{s,D}=1.5K_0",-,Sand,Default v8.8,Driven pile
+Ks_bored,0.85 * K0,"K_{s,B}=0.85K_0",-,Sand,Default v8.8,Bored pile
+Ks,Ks_driven if pile_type_code > 1.5 else Ks_bored,"K_s=K_{s,D}\ \mathrm{or}\ K_{s,B}",-,Sand,Default v8.8,"Bored=1, Driven=2"
+delta_deg,0.75 * phi_deg,\delta=0.75\phi,degree,Sand,Default v8.8,Interface friction angle
+beta_sand,Ks * tan(radians(delta_deg)),\beta=K_s\tan\delta,-,Sand,Default v8.8,Beta method
+fs_clay_t_m2,alpha_clay * Su_t_m2,f_s=\alpha S_u,t/m²,Clay,Default v8.8,Clay unit shaft friction
+fs_sand_t_m2,beta_sand * sigma_v02_t_m2,"f_s=\beta\sigma'_{v,mid}",t/m²,Sand,Default v8.8,Sand unit shaft friction
+Nc,9,N_c=9,-,Clay,Default v8.8,Clay bearing factor
+Nq_driven,exp(pi * tan(radians(phi_deg))) * tan(radians(45 + phi_deg/2))**2 * (1 + tan(radians(phi_deg))),"N_{q,D}=e^{\pi\tan\phi}\tan^2(45^\circ+\phi/2)(1+\tan\phi)",-,Sand,Advisor note,Driven Nq; phi converted to radians in trig functions
+Nq_bored,0.6934 * exp(0.0974 * phi_deg),"N_{q,B}=0.6934e^{0.0974\phi}",-,Sand,Advisor note,Bored empirical Nq; phi in degrees
+Nq,Nq_driven if pile_type_code > 1.5 else Nq_bored,"N_q=N_{q,D}\ \mathrm{or}\ N_{q,B}",-,Sand,Default v8.8,"Bored=1, Driven=2"
+Ngamma,2 * (Nq + 1) * tan(radians(phi_deg)),N_\gamma=2(N_q+1)\tan\phi,-,Sand,Default v8.8,Available for custom equations
+qe_clay_t_m2,Nc * Su_t_m2,q_e=N_cS_u,t/m²,Clay,Default v8.8,Clay tip resistance
+qe_sand_t_m2,(Nq - 1) * sigma_v01_t_m2,"q_e=(N_q-1)\sigma'_{v,bottom}",t/m²,Sand,Default v8.8,Sand tip resistance

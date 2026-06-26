@@ -1,0 +1,22 @@
+parameter,equation,latex,unit,soil_type,source,notes
+su2_t_m2,nan if SPT_N_missing > 0.5 else 0.45 * SPT_N,s_{u2}=0.45N,t/m²,Clay,Phnom Penh preliminary test file,Testing only; soft alluvial clay assumption.
+Su_t_m2,"avg(su1_t_m2, su2_t_m2)","S_u=\mathrm{avg}(s_{u1},s_{u2})",t/m²,Clay,Phnom Penh preliminary test file,Average ignores blank/nan.
+alpha_clay,"min(0.95, max(0.30, 0.95 * exp(-0.045 * Su_t_m2)))","\alpha=\min(0.95,\max(0.30,0.95e^{-0.045S_u}))",-,Clay,Phnom Penh preliminary alpha test,Softer-clay test assumption; not calibrated.
+CN,"min(1.8, max(0.6, sqrt(95.76 / max(sigma_v02_t_m2 * g_factor, 1.0))))","C_N=\min(1.8,\max(0.6,\sqrt{95.76/\sigma'_{v}}))",-,Sand,Phnom Penh preliminary test file,For testing only.
+N_corr,CN * SPT_N,N'=C_NN,blows/ft,Sand,Phnom Penh preliminary test file,Corrected SPT value.
+phi_deg,"min(40, max(26, 26.0 + 0.22 * N_corr))","\phi=\min(40,\max(26,26+0.22N'))",degree,Sand,Phnom Penh preliminary test file,Slightly conservative sand friction angle for testing.
+K0,1 - sin(radians(phi_deg)),K_0=1-\sin\phi,-,Sand,Jaky-style,At-rest earth pressure coefficient.
+Ks_driven,1.2 * K0,"K_{s,D}=1.2K_0",-,Sand,Phnom Penh preliminary test file,Driven pile side resistance factor for testing.
+Ks_bored,0.65 * K0,"K_{s,B}=0.65K_0",-,Sand,Phnom Penh preliminary test file,Bored pile side resistance factor for testing.
+Ks,Ks_driven if pile_type_code > 1.5 else Ks_bored,"K_s=K_{s,D}\ \mathrm{or}\ K_{s,B}",-,Sand,Phnom Penh preliminary test file,"Bored=1, driven=2."
+delta_deg,0.67 * phi_deg,\delta=0.67\phi,degree,Sand,Phnom Penh preliminary test file,Interface friction angle for testing.
+beta_sand,Ks * tan(radians(delta_deg)),\beta=K_s\tan\delta,-,Sand,Phnom Penh preliminary beta test,Beta method style expression.
+fs_clay_t_m2,alpha_clay * Su_t_m2,f_s=\alpha S_u,t/m²,Clay,Phnom Penh preliminary alpha test,Clay unit shaft friction.
+fs_sand_t_m2,beta_sand * sigma_v02_t_m2,"f_s=\beta\sigma'_{v,mid}",t/m²,Sand,Phnom Penh preliminary beta test,Sand unit shaft friction.
+Nc,9,N_c=9,-,Clay,General pile bearing,Common undrained clay bearing factor.
+Nq_driven,exp(pi * tan(radians(phi_deg))) * tan(radians(45 + phi_deg/2))**2,N_q=e^{\pi\tan\phi}\tan^2(45^\circ+\phi/2),-,Sand,Phnom Penh preliminary bearing test,Testing only.
+Nq_bored,0.60 * Nq_driven,"N_{q,B}=0.60N_{q,D}",-,Sand,Phnom Penh preliminary test file,Reduced bored pile Nq for preliminary testing.
+Nq,Nq_driven if pile_type_code > 1.5 else Nq_bored,"N_q=N_{q,D}\ \mathrm{or}\ N_{q,B}",-,Sand,Phnom Penh preliminary test file,"Bored=1, driven=2."
+Ngamma,2 * (Nq + 1) * tan(radians(phi_deg)),N_\gamma=2(N_q+1)\tan\phi,-,Sand,Phnom Penh preliminary test file,Included for completeness.
+qe_clay_t_m2,Nc * Su_t_m2,q_e=N_cS_u,t/m²,Clay,Phnom Penh preliminary test file,Clay end bearing.
+qe_sand_t_m2,(Nq - 1) * sigma_v01_t_m2,"q_e=(N_q-1)\sigma'_{v,base}",t/m²,Sand,Phnom Penh preliminary test file,Sand end bearing.
