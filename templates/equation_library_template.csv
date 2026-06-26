@@ -1,0 +1,9 @@
+parameter,equation,latex,unit,soil_type,source,notes
+su2_t_m2,nan if SPT_N_missing > 0.5 else 0.52 * SPT_N,s_{u2}=0.52N,t/m²,Clay,Example,Blank SPT is treated as blank/nan.
+Su_t_m2,"avg(su1_t_m2, su2_t_m2)","S_u=\mathrm{avg}(s_{u1},s_{u2})",t/m²,Clay,Example,Average of available Su inputs.
+alpha_clay,0.93 * exp(-0.0536 * Su_t_m2),\alpha=0.93e^{-0.0536S_u},-,Clay,Example,Clay adhesion factor.
+fs_clay_t_m2,alpha_clay * Su_t_m2,f_s=\alpha S_u,t/m²,Clay,Example,Clay unit shaft friction.
+beta_sand,Ks * tan(radians(delta_deg)),\beta=K_s\tan\delta,-,Sand,Example,Sand beta factor.
+fs_sand_t_m2,beta_sand * sigma_v02_t_m2,"f_s=\beta\sigma'_{v,mid}",t/m²,Sand,Example,Sand unit shaft friction.
+qe_clay_t_m2,Nc * Su_t_m2,q_e=N_cS_u,t/m²,Clay,Example,Clay end bearing.
+qe_sand_t_m2,(Nq - 1) * sigma_v01_t_m2,"q_e=(N_q-1)\sigma'_{v,base}",t/m²,Sand,Example,Sand end bearing.
